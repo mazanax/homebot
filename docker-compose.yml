@@ -1,0 +1,30 @@
+version: "3"
+services:
+  bot:
+    container_name: "home_bot"
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    restart: always
+    entrypoint: ["python", "main.py"]
+  celery:
+    container_name: "home_worker"
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - ./downloads:/app/downloads
+    restart: always
+    entrypoint: ["celery", "-A", "tasks", "worker", "--loglevel=INFO"]
+  redis:
+    image: redis:latest
+    container_name: "home_redis"
+    restart: always
