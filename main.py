@@ -9,7 +9,7 @@ from tasks import download_youtube_video
 load_dotenv()
 TELEGRAM_TOKEN = getenv('TELEGRAM_TOKEN')
 
-known_tg_id = map(lambda id_: int(id_), getenv('TELEGRAM_ADMINS_ID', '').split(','))
+known_tg_id = list(map(lambda id_: int(id_), getenv('TELEGRAM_ADMINS_ID', '').split(',')))
 bot = Bot(token=TELEGRAM_TOKEN, parse_mode=types.ParseMode.HTML)
 
 
@@ -26,7 +26,9 @@ async def message_handler(message: types.Message):
         return
 
     if not (message.text.startswith("https://youtube.com/")
-            or message.text.startswith("https://www.youtube.com/")):
+            or message.text.startswith("https://www.youtube.com/")
+            or message.text.startswith("https://youtu.be/")
+            or message.text.startswith("https://www.youtu.be/")):
         await message.answer(
             text="<b>Неизвестная ссылка</b>\n\nВ данный момент я умею скачивать видео <b>только</b> с ютуба.")
         return
